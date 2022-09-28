@@ -38,4 +38,13 @@ export class ProductsService {
     //No todas las APIs te respndenden con el objeto Product, algunas sólo responden con boolean como esta API
     return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
   }
+
+  //Para técnica de paginación
+  //limit --> cantidad registros a traer de API
+  //offset --> cuantos quiero escapar desde la posición cero
+  getProductsByPage(limit: number, offset: number) {
+    return this.http.get<Product[]>(`${this.apiUrl}`, {
+      params: { limit, offset },
+    });
+  }
 }

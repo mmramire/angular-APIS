@@ -27,6 +27,8 @@ export class ProductsComponent implements OnInit {
     category: { id: '', name: '' },
     description: '',
   };
+  limit: number = 10;
+  offset: number = 0;
   constructor(
     private storeService: StoreService,
     private productsService: ProductsService
@@ -38,11 +40,19 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productsService.getAllProducts().subscribe((data) => {
+    // this.productsService.getAllProducts().subscribe((data) => {
+    //   this.products = data;
+    // });
+    // console.log(
+    //   'ngOnInit de ProductsComponent => this.productsService.getAllProducts.suscribe'
+    // );
+
+    //Con paginación
+    this.productsService.getProductsByPage(10, 0).subscribe((data) => {
       this.products = data;
     });
     console.log(
-      'ngOnInit de ProductsComponent => this.productsService.getAllProducts.suscribe'
+      'ngOnInit de ProductsComponent => this.productsService.getProductsByPage(10,0).suscribe'
     );
   }
 
@@ -103,5 +113,15 @@ export class ProductsComponent implements OnInit {
       this.products.splice(productIndex, 1);
       this.showProductDetail = false;
     });
+  }
+
+  loadMore() {
+    this.productsService
+      .getProductsByPage(this.limit, this.offset)
+      .subscribe((data) => {
+        //los voy agregando para no pisar los ya renderizados
+        this.products = this.products.concat(data);
+        this.offset += this.limit;
+      });
   }
 }
