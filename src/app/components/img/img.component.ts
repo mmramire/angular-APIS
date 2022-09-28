@@ -1,19 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, AfterViewInit, OnDestroy, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  AfterViewInit,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'app-img',
   templateUrl: './img.component.html',
-  styleUrls: ['./img.component.scss']
+  styleUrls: ['./img.component.scss'],
 })
-export class ImgComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-
+export class ImgComponent
+  implements OnInit, OnChanges, AfterViewInit, OnDestroy
+{
   img: string = '';
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('img')
   set changeImg(newImg: string) {
     this.img = newImg;
-    console.log('change just img  =>' ,this.img);
+    console.log('changeIng de ImgComponent');
     // code
   }
   @Input() alt: string = '';
@@ -25,14 +36,14 @@ export class ImgComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy
   constructor() {
     // before render
     // NO async -- once time
-    console.log('constructor', 'imgValue =>', this.img);
+    console.log('constructor de ImgComponent');
   }
 
   ngOnChanges(changes: SimpleChanges) {
     // before - during render
     // changes inputs -- multiples times
-    console.log('ngOnChanges', 'imgValue =>', this.img);
-    console.log('changes', changes);
+    console.log('ngOnChanges de ImgComponent');
+    // console.log('changes', changes);
     // if (changes.) {
     //   // code
     // }
@@ -41,7 +52,7 @@ export class ImgComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy
   ngOnInit(): void {
     // before render
     // async - fetch -- once time
-    console.log('ngOnInit', 'imgValue =>', this.img);
+    console.log('ngOnInit de ImgComponent');
     // this.counterFn = window.setInterval(() => {
     //   this.counter += 1;
     //   console.log('run counter');
@@ -51,12 +62,12 @@ export class ImgComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy
   ngAfterViewInit() {
     // after render
     // handler children -- once time
-    console.log('ngAfterViewInit');
+    console.log('ngAfterViewInit de ImgComponent');
   }
 
   ngOnDestroy() {
     // delete -- once time
-    console.log('ngOnDestroy');
+    console.log('ngOnDestroy de ImgComponent');
     // window.clearInterval(this.counterFn);
   }
 
@@ -65,8 +76,7 @@ export class ImgComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy
   }
 
   imgLoaded() {
-    console.log('log hijo');
+    console.log('imgLoaded de ImgComponent');
     this.loaded.emit(this.img);
   }
-
 }
