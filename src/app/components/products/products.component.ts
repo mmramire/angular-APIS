@@ -85,6 +85,23 @@ export class ProductsComponent implements OnInit {
     const id = this.productChosen.id;
     this.productsService.update(id, changes).subscribe((data) => {
       console.log('updated producto', data);
+      const productIndex = this.products.findIndex(
+        (item) => item.id === this.productChosen.id
+      );
+      this.products[productIndex] = data;
+    });
+  }
+
+  deleteProduct() {
+    const id = this.productChosen.id;
+    this.productsService.delete(id).subscribe(() => {
+      console.log(`deleted product ${id}`);
+      //Hay que actualizar el renderizado de la vista
+      const productIndex = this.products.findIndex(
+        (item) => item.id === this.productChosen.id
+      );
+      this.products.splice(productIndex, 1);
+      this.showProductDetail = false;
     });
   }
 }
