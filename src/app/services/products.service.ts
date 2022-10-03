@@ -11,7 +11,9 @@ import {
   providedIn: 'root',
 })
 export class ProductsService {
-  private apiUrl = 'https://young-sands-07814.herokuapp.com/api/products';
+  //Cambiamos al apiURL puenteada en el PROXY por tema de CORS
+  private apiUrl = '/api/products';
+  // private apiUrl = 'https://young-sands-07814.herokuapp.com/api/products';
   //Para abrir el Swagger --> https://young-sands-07814.herokuapp.com/docs/#/
 
   constructor(private http: HttpClient) {}
