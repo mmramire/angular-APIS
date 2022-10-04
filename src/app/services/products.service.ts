@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 import {
   Product,
@@ -11,8 +12,11 @@ import {
   providedIn: 'root',
 })
 export class ProductsService {
+  //Usamos la variable en entorno, si es desarrollo viene vacía, sino apunta a la de producción
+  private apiUrl = `${environment.API_URL}/api/products`;
+
   //Cambiamos al apiURL puenteada en el PROXY por tema de CORS
-  private apiUrl = '/api/products';
+  // private apiUrl = '/api/products';
   // private apiUrl = 'https://young-sands-07814.herokuapp.com/api/products';
   //Para abrir el Swagger --> https://young-sands-07814.herokuapp.com/docs/#/
 
