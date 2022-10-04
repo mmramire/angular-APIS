@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import {
+  HttpClient,
+  HttpParams,
+  HttpErrorResponse,
+  HttpStatusCode,
+} from '@angular/common/http';
+import { retry, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 import {
   Product,
@@ -8,6 +14,7 @@ import {
   UpdateProductDTO,
 } from './../models/product.model';
 
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,12 +29,30 @@ export class ProductsService {
 
   constructor(private http: HttpClient) {}
 
-  getAllProducts() {
-    return this.http.get<Product[]>(this.apiUrl);
+  getAllProducts(limit?: number, offset?: number) {
+    let params = new HttpParams();
+    if (limit && offset) {
+      params = params.set('limit', limit);
+      params = params.set('offset', limit);
+    }
+    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(retry(3));
   }
 
   getProduct(id: string) {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === HttpStatusCode.Conflict) {
+          return throwError('Algo está fallando en el server, error 500');
+        }
+        if (error.status === HttpStatusCode.NotFound) {
+          return throwError('El producto no existe, error 404');
+        }
+        if (error.status === HttpStatusCode.Unauthorized) {
+          return throwError('No estás autorizado, error 401');
+        }
+        return throwError('Ups algo salió mal');
+      })
+    );
   }
 
   // create(data: Product) {
@@ -49,8 +74,10 @@ export class ProductsService {
   //limit --> cantidad registros a traer de API
   //offset --> cuantos quiero escapar desde la posición cero
   getProductsByPage(limit: number, offset: number) {
-    return this.http.get<Product[]>(`${this.apiUrl}`, {
-      params: { limit, offset },
-    });
+    return this.http
+      .get<Product[]>(`${this.apiUrl}`, {
+        params: { limit, offset },
+      })
+      .pipe(retry(3));
   }
 }
