@@ -5,8 +5,8 @@ import {
   HttpErrorResponse,
   HttpStatusCode,
 } from '@angular/common/http';
-import { retry, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { retry, catchError, map } from 'rxjs/operators';
+import { throwError, zip } from 'rxjs';
 
 import {
   Product,
@@ -15,6 +15,7 @@ import {
 } from './../models/product.model';
 
 import { environment } from '../../environments/environment';
+import { isNgTemplate } from '@angular/compiler';
 @Injectable({
   providedIn: 'root',
 })
@@ -35,7 +36,17 @@ export class ProductsService {
       params = params.set('limit', limit);
       params = params.set('offset', limit);
     }
-    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(retry(3));
+    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(
+      retry(3),
+      map((products) =>
+        products.map((item) => {
+          return {
+            ...item,
+            taxes: 0.19 * item.price,
+          };
+        })
+      )
+    );
   }
 
   getProduct(id: string) {
@@ -79,5 +90,11 @@ export class ProductsService {
         params: { limit, offset },
       })
       .pipe(retry(3));
+  }
+
+  fetchAndUpdate(id: string, dto: UpdateProductDTO) {
+    //Para hacerlo con Promese.all() usamos zip de rxjs, acá no hay dependencia, queremos correr todo en paralelo.
+    //la posición del array que se crea es el orden de la respuesta en el observable
+    return zip(this.getProduct(id), this.update(id, dto));
   }
 }

@@ -8,6 +8,8 @@ import {
 
 import { StoreService } from '../../services/store.service';
 import { ProductsService } from '../../services/products.service';
+import { switchMap } from 'rxjs/operators';
+import { zip } from 'rxjs';
 
 @Component({
   selector: 'app-products',
@@ -85,6 +87,31 @@ export class ProductsComponent implements OnInit {
         this.statusDetail = 'error';
       }
     );
+  }
+
+  readAndUpdate(id: string) {
+    //Peticion con datos de la 1ra a la 2da (cuando hay dependencia), para evitar el callback hell usar switchMap de rxjs
+    //Con Promise es más sencillo por usar el then().then()... etc
+    this.productsService
+      .getProduct(id)
+      .pipe(
+        switchMap((product) =>
+          this.productsService.update(product.id, {
+            title:
+              'Cambio TITULO en readAndUpdate con dependencia de datos en swithMap',
+          })
+        )
+      )
+      .subscribe((data) => console.log(data));
+
+    this.productsService
+      .fetchAndUpdate(id, {
+        title: 'Cambio TITULO en readAndUpdate pero en ZIP por paralelismo',
+      })
+      .subscribe((respuesta) => {
+        const read = respuesta[0];
+        const update = respuesta[1];
+      });
   }
 
   createNewProduct() {

@@ -11,6 +11,7 @@ export interface Product {
   images: string[];
   description: string;
   category: Category;
+  taxes?: number; //agregado para la parte de transformación de peticiones
 }
 
 //Este es el que necesito para mandar a la API para que me devuelva el objeto creado, me da la flexibilidad
