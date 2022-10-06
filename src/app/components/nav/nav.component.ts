@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 import { StoreService } from '../../services/store.service';
 
@@ -10,8 +11,12 @@ import { StoreService } from '../../services/store.service';
 export class NavComponent implements OnInit {
   activeMenu = false;
   counter = 0;
+  @Input() userLogued: string = '';
 
-  constructor(private storeService: StoreService) {
+  constructor(
+    private storeService: StoreService,
+    private authService: AuthService
+  ) {
     console.log('constructor de NavComponent');
   }
 
