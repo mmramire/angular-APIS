@@ -18,6 +18,7 @@ export class AppComponent {
   showImg = true;
   // token: string = '';
   userLogued: string = '';
+  imgRta = '';
 
   constructor(
     private authService: AuthService,
@@ -70,5 +71,15 @@ export class AppComponent {
     this.filesService
       .getFile('myPdf', `${this.apiUrl}/dummy.pdf`, 'application/pdf')
       .subscribe();
+  }
+
+  onUpload(event: Event) {
+    const element = event.target as HTMLInputElement; //HTMLInputElement es una interface
+    const file = element.files?.item(0);
+    if (file) {
+      this.filesService.uploadFile(file).subscribe((rta) => {
+        this.imgRta = rta.location;
+      });
+    }
   }
 }
