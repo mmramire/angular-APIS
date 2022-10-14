@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../app/services/auth.service';
+import { FilesService } from '../app/services/files.service';
 import { UsersService } from '../app/services/users.service';
 import { User, CreateUserDTO } from './models/user.model';
 
@@ -10,6 +12,8 @@ import { User, CreateUserDTO } from './models/user.model';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  private apiUrl = `${environment.API_URL}/api/files`;
+
   imgParent = '';
   showImg = true;
   // token: string = '';
@@ -17,7 +21,8 @@ export class AppComponent {
 
   constructor(
     private authService: AuthService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private filesService: FilesService
   ) {}
 
   onLoaded(img: string) {
@@ -59,5 +64,11 @@ export class AppComponent {
 
   showUserLogued() {
     return this.userLogued;
+  }
+
+  downloadPdf() {
+    this.filesService
+      .getFile('myPdf', `${this.apiUrl}/dummy.pdf`, 'application/pdf')
+      .subscribe();
   }
 }
