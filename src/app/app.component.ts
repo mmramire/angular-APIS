@@ -12,7 +12,7 @@ import { User, CreateUserDTO } from './models/user.model';
 export class AppComponent {
   imgParent = '';
   showImg = true;
-  token: string = '';
+  // token: string = '';
   userLogued: string = '';
 
   constructor(
@@ -30,27 +30,32 @@ export class AppComponent {
 
   createUser() {
     const dto: CreateUserDTO = {
-      name: 'Sebas',
-      email: 'sebas@mail.com',
-      password: '1122',
+      name: 'keinner olivares',
+      email: 'rkeinneroa@gmail.com',
+      password: '1212',
     };
     this.usersService.create(dto).subscribe((rta) => console.log(rta));
   }
   login() {
-    const email: string = 'sebas@mail.com';
-    const password: string = '1122';
+    const email: string = 'rkeinneroa@gmail.com';
+    const password: string = '1212';
     this.authService.login(email, password).subscribe((rta) => {
       console.log(rta.access_token);
-      this.token = rta.access_token;
+      this.authService.profile().subscribe((data) => {
+        console.log(data);
+        this.userLogued = data.email;
+      });
+      // this.token = rta.access_token;
     });
   }
 
-  getProfile() {
-    this.authService.profile(this.token).subscribe((profile) => {
-      console.log(profile);
-      this.userLogued = profile.email;
-    });
-  }
+  // getProfile() {
+  //   // this.authService.profile(this.token).subscribe((profile) => {
+  //   //   console.log(profile);
+  //   //   this.userLogued = profile.email;
+  //   // });
+  //   this.authService.profile().subscribe();
+  // }
 
   showUserLogued() {
     return this.userLogued;
